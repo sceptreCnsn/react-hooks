@@ -1,28 +1,31 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useReducer, useRef, useEffect, useContext, useCallback, useImperativeHandle } from 'react';
+import Todo from './components/Todo';
+import Header from './components/Header';
+import Auth from './components/Auth';
+import AuthContext from './auth-context';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+const App = () => {
+  const [page, setPage] = useState('auth');
+  const [authStatus, setAuthStatus] = useState(false);
+
+  const switchPage = (pageName) => {
+    setPage(pageName);
   }
+
+  const login = (value) => {
+    setAuthStatus(value);
+    console.log(authStatus);
+  }
+
+  return (
+    <div>
+      <AuthContext.Provider value={{status: authStatus, login}}>
+        <Header onLoadTodos={switchPage.bind(this, 'todos')} onLoadAuth={switchPage.bind(this, 'auth')}></Header>
+        <hr></hr>
+        {page === 'todos' && authStatus ? <Todo /> : <Auth />}
+      </AuthContext.Provider>
+    </div>
+  );
 }
 
 export default App;
